@@ -71,7 +71,7 @@ def select(soup, selector):
             checker = attribute_checker(operator, attribute, value)
             found = []
             for context in current_context:
-                found.extend([el for el in context.findAll(tag) if checker(el)])
+                found.extend([el for el in context.find_all(tag) if checker(el)])
             current_context = found
             continue
 
@@ -93,13 +93,18 @@ def select(soup, selector):
                 tag = True
             classes = set(klass.split('.'))
             found = []
+
+            def is_in_all_classes(class_tag):
+                if not isinstance(tag, bool):
+                    return class_tag.name == tag \
+                            and class_tag.has_key('class') \
+                            and classes.issubset(class_tag['class'])
+                else:
+                    return class_tag.has_key('class') \
+                            and classes.issubset(class_tag['class'])
+
             for context in current_context:
-                found.extend(
-                    context.findAll(tag,
-                        {'class': lambda attr:
-                             attr and classes.issubset(attr.split())}
-                    )
-                )
+                found.extend(context.find_all(is_in_all_classes))
             current_context = found
             continue
 
@@ -107,7 +112,7 @@ def select(soup, selector):
             # Star selector
             found = []
             for context in current_context:
-                found.extend(context.findAll(True))
+                found.extend(context.find_all(True))
             current_context = found
             continue
 
@@ -128,7 +133,7 @@ def select(soup, selector):
             return []
         found = []
         for context in current_context:
-            found.extend(context.findAll(token))
+            found.extend(context.find_all(token))
         current_context = found
     return current_context
 
