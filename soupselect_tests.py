@@ -1,5 +1,5 @@
 import unittest
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from soupselect import select, monkeypatch, unmonkeypatch
 
@@ -63,7 +63,7 @@ class TestBasicSelectors(BaseTest):
             els = select(self.soup, selector)
             self.assertEqual(len(els), 1)
             self.assertEqual(els[0].name, 'p')
-            self.assertEqual(els[0]['class'], 'onep')
+            self.assertEqual(els[0]['class'], [u'onep'])
 
     def test_class_mismatched_tag(self):
         els = select(self.soup, 'div.onep')
@@ -82,7 +82,7 @@ class TestBasicSelectors(BaseTest):
         self.assertEqual(len(els), 3)
         for el in els:
             self.assertEqual(el.name, 'p')
-        self.assertEqual(els[1]['class'], 'onep')
+        self.assertEqual(els[1]['class'], [u'onep'])
         self.assert_(not els[0].has_key('class'))
 
     def test_a_bunch_of_emptys(self):
