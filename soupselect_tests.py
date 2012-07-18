@@ -3,29 +3,29 @@ from bs4 import BeautifulSoup
 
 from soupselect import select, monkeypatch, unmonkeypatch
 
+
 class BaseTest(unittest.TestCase):
-    
+
     def setUp(self):
         self.soup = BeautifulSoup(HTML)
-    
+
     def assertSelects(self, selector, expected_ids):
         el_ids = [el['id'] for el in select(self.soup, selector)]
         el_ids.sort()
         expected_ids.sort()
         self.assertEqual(expected_ids, el_ids,
-            "Selector %s, expected [%s], got [%s]" % (
-                selector, ', '.join(expected_ids), ', '.join(el_ids)
-            )
-        )
-    
+                "Selector %r, expected %r, got %r" % (selector, expected_ids,
+                    el_ids))
+
     assertSelect = assertSelects
-    
+
     def assertSelectMultiple(self, *tests):
         for selector, expected_ids in tests:
             self.assertSelect(selector, expected_ids)
 
+
 class TestBasicSelectors(BaseTest):
-    
+
     def test_one_tag_one(self):
         els = select(self.soup, 'title')
         self.assertEqual(len(els), 1)
@@ -39,7 +39,6 @@ class TestBasicSelectors(BaseTest):
             self.assertEqual(div.name, 'div')
 
     def test_tag_in_tag_one(self):
-        els = select(self.soup, 'div div')
         self.assertSelects('div div', ['inner'])
 
     def test_tag_in_tag_many(self):
@@ -121,9 +120,9 @@ class TestAttributeSelectors(BaseTest):
             ('[href="blah.css"]', ['l1']),
             ('[href="no-blah.css"]', []),
             ('p[href="no-blah.css"]', []),
-            ('[href="no-blah.css"]', []),        
+            ('[href="no-blah.css"]', []),
         )
-    
+
     def test_attribute_tilde(self):
         self.assertSelectMultiple(
             ('p[class~="class1"]', ['pmulti']),
@@ -153,7 +152,7 @@ class TestAttributeSelectors(BaseTest):
             ('div[id^="m"]', ['main']),
             ('a[id^="m"]', ['me']),
         )
-    
+
     def test_attribute_endswith(self):
         self.assertSelectMultiple(
             ('[href$=".css"]', ['l1']),
@@ -163,7 +162,7 @@ class TestAttributeSelectors(BaseTest):
             ('div[id$="1"]', []),
             ('[id$="noending"]', []),
         )
-    
+
     def test_attribute_contains(self):
         self.assertSelectMultiple(
             # From test_attribute_startswith
@@ -182,7 +181,8 @@ class TestAttributeSelectors(BaseTest):
             ('[href*=".css"]', ['l1']),
             ('link[href*=".css"]', ['l1']),
             ('link[id*="1"]', ['l1']),
-            ('[id*="1"]', ['l1', 'p1', 'header1', 's1a1', 's1a2', 's2a1', 's1a2s1']),
+            ('[id*="1"]', ['l1', 'p1', 'header1', 's1a1', 's1a2', 's2a1',
+                's1a2s1']),
             ('div[id*="1"]', []),
             ('[id*="noending"]', []),
             # New for this test
@@ -192,7 +192,7 @@ class TestAttributeSelectors(BaseTest):
             ('div[id*="n"]', ['main', 'inner']),
             ('div[id*="nn"]', ['inner']),
         )
-    
+
     def test_attribute_exact_or_hypen(self):
         self.assertSelectMultiple(
             ('p[lang|="en"]', ['lang-en', 'lang-en-gb', 'lang-en-us']),
@@ -212,8 +212,9 @@ class TestAttributeSelectors(BaseTest):
             ('p[blah]', []),
         )
 
+
 class TestMonkeyPatch(BaseTest):
-    
+
     def assertSelectMultipleExplicit(self, soup, *tests):
         for selector, expected_ids in tests:
             el_ids = [el['id'] for el in soup.findSelect(selector)]
@@ -224,22 +225,22 @@ class TestMonkeyPatch(BaseTest):
                     selector, ', '.join(expected_ids), ', '.join(el_ids)
                 )
             )
-    
+
     def test_monkeypatch_explicit(self):
         soup = BeautifulSoup(HTML)
         self.assertRaises(TypeError, soup.findSelect, '*')
-        
+
         monkeypatch(BeautifulSoup)
-        
+
         self.assert_(soup.findSelect('*'))
         self.assertSelectMultipleExplicit(soup,
             ('link', ['l1']),
             ('div#main', ['main']),
             ('div div', ['inner']),
         )
-        
+
         unmonkeypatch(BeautifulSoup)
-        
+
         self.assertRaises(TypeError, soup.findSelect, '*')
 
     def test_monkeypatch_implicit(self):
@@ -254,9 +255,9 @@ class TestMonkeyPatch(BaseTest):
             ('div#main', ['main']),
             ('div div', ['inner']),
         )
-        
+
         unmonkeypatch()
-        
+
         self.assertRaises(TypeError, soup.findSelect, '*')
 
 
