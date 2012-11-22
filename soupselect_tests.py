@@ -103,6 +103,16 @@ class TestBasicSelectors(BaseTest):
         self.assertSelects('.s1 > a', ['s1a1', 's1a2'])
         self.assertSelects('.s1 > a span', ['s1a2s1'])
 
+    def test_adjacent_sibling_selector(self):
+        self.assertSelects('#p1 + h2', ['header2'])
+        self.assertSelects('#p1 + h2 + p', ['pmulti'])
+        self.assertEqual(len(select(self.soup, '#p1 + p')), 0)
+
+    def test_general_sibling_selector(self):
+        self.assertSelects('#p1 ~ h2', ['header2', 'header3'])
+        self.assertSelects('#p1 ~ h2 + a', ['me'])
+        self.assertEqual(len(select(self.soup, '#inner ~ h2')), 0)
+
 
 class TestAttributeSelectors(BaseTest):
 

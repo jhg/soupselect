@@ -58,7 +58,7 @@ def select(soup, selector):
     tokens = selector.split()
     current_context = [soup]
     for index, token in enumerate(tokens):
-        if tokens[index - 1] == '>':
+        if tokens[index - 1] in ('>', '+', '~'):
             # already found direct descendants in last step
             continue
 
@@ -120,6 +120,33 @@ def select(soup, selector):
             found = []
             for context in current_context:
                 found.extend(context.findAll(tag, recursive=False))
+            current_context = found
+            continue
+
+        if token == '+':
+            # Adjacent sibling selector
+            tag = tokens[index + 1]
+            found = []
+            for context in current_context:
+                # skip non-Tags (NavigableStrings)
+                while not hasattr(context.nextSibling, 'name'):
+                    context = context.nextSibling
+
+                if context.nextSibling.name == tag:
+                    found.append(context.nextSibling)
+            current_context = found
+            continue
+
+        if token == '~':
+            # General sibling selector
+            tag = tokens[index + 1]
+            found = []
+            for context in current_context:
+                while context.nextSibling:
+                    if (hasattr(context.nextSibling, 'name') and
+                            context.nextSibling.name == tag):
+                        found.append(context.nextSibling)
+                    context = context.nextSibling
             current_context = found
             continue
 
