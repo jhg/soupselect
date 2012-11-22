@@ -142,11 +142,7 @@ def select(soup, selector):
             tag = tokens[index + 1]
             found = []
             for context in current_context:
-                while context.nextSibling:
-                    if (hasattr(context.nextSibling, 'name') and
-                            context.nextSibling.name == tag):
-                        found.append(context.nextSibling)
-                    context = context.nextSibling
+                found.extend(context.findNextSiblings(tag))
             current_context = found
             continue
 
