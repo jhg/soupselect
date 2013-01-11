@@ -1,5 +1,5 @@
 import unittest
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from soupselect import select, monkeypatch, unmonkeypatch
 

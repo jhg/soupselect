@@ -138,10 +138,10 @@ def monkeypatch(BeautifulSoupClass=None):
     common import location for BeautifulSoup.
     """
     if not BeautifulSoupClass:
-        from BeautifulSoup import BeautifulSoup as BeautifulSoupClass
+        from bs4 import BeautifulSoup as BeautifulSoupClass
     BeautifulSoupClass.findSelect = select
 
 def unmonkeypatch(BeautifulSoupClass=None):
     if not BeautifulSoupClass:
-        from BeautifulSoup import BeautifulSoup as BeautifulSoupClass
+        from bs4 import BeautifulSoup as BeautifulSoupClass
     delattr(BeautifulSoupClass, 'findSelect')
