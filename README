@@ -2,13 +2,13 @@ A single function, select(soup, selector), that can be used to select items
 from a BeautifulSoup instance using CSS selector syntax.
 
 Currently supports type selectors, class selectors, id selectors, attribute
-selectors and the descendant combinator.
+selectors, the descendant combinator and the immediate child (`>`) combinator.
 
-soupselect requires BeautifulSoup v3.0.3 or above; it will not work with v2.x
+This branch of soupselect requires BeautifulSoup 4.0 or above; it will not work
+with v2.x or v3.x.
 
 Example usage:
-
-    >>> from BeautifulSoup import BeautifulSoup as Soup
+    >>> from bs4 import BeautifulSoup as Soup
     >>> from soupselect import select
     >>> import urllib
     >>> soup = Soup(urllib.urlopen('http://slashdot.org/'))
@@ -22,7 +22,7 @@ Example usage:
 
 You can also monkey-patch the BeautifulSoup class itself:
 
-    >>> from BeautifulSoup import BeautifulSoup as Soup
+    >>> from bs4 import BeautifulSoup as Soup
     >>> import soupselect; soupselect.monkeypatch()
     >>> import urllib
     >>> soup = Soup(urllib.urlopen('http://slashdot.org/'))
