@@ -52,7 +52,7 @@ def attribute_checker(operator, attribute, value=''):
         # attribute is either exactly value or starts with value-
         '|': lambda el: flatten_attr(el.get(attribute, [''])) == value \
             or flatten_attr(el.get(attribute, [''])).startswith('%s-' % value),
-    }.get(operator, lambda el: el.has_key(attribute))
+    }.get(operator, lambda el: attribute in el)
 
 
 def select(soup, selector):
@@ -102,10 +102,10 @@ def select(soup, selector):
             def is_in_all_classes(class_tag):
                 if not isinstance(tag, bool):
                     return class_tag.name == tag \
-                            and class_tag.has_key('class') \
+                            and ('class' in class_tag) \
                             and classes.issubset(class_tag['class'])
                 else:
-                    return class_tag.has_key('class') \
+                    return ('class' in class_tag) \
                             and classes.issubset(class_tag['class'])
 
             for context in current_context:
