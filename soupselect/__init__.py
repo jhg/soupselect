@@ -1,1 +1,2 @@
 import soupselect
+soupselect.monkeypatch()
