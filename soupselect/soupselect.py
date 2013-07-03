@@ -98,18 +98,13 @@ def select(soup, selector):
                 tag = True
             classes = set(klass.split('.'))
             found = []
-
-            def is_in_all_classes(class_tag):
-                if not isinstance(tag, bool):
-                    return class_tag.name == tag \
-                            and ('class' in class_tag) \
-                            and classes.issubset(class_tag['class'])
-                else:
-                    return ('class' in class_tag) \
-                            and classes.issubset(class_tag['class'])
-
             for context in current_context:
-                found.extend(context.find_all(is_in_all_classes))
+                found.extend(
+                    context.find_all(tag,
+                        {'class': lambda attr:
+                             attr and attr in classes}
+                    )
+                )
             current_context = found
             continue
 
